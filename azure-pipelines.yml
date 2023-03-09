@@ -17,7 +17,7 @@ steps:
     repository: sanju333/aspapp
     command: 'buildAndPush'
     Dockerfile: 'Dockerfile'
-    tags: '$Build.BuildId'
+    tags: '$(Build.BuildId)'
 
 - task: oc-cmd@3
   inputs:
