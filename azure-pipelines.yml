@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  displayName: docker_build_push
+  inputs:
+    containerRegistry: 'Docker Hub'         #DockerHub Service Connection
+    repository: sanju333/aspapp
+    command: 'buildAndPush'
+    Dockerfile: 'Dockerfile'
+    tags: '$Build.BuildId'
+
+- task: oc-cmd@3
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OpenShift'
+    version: '4.12.0'
+    cmd: 'oc new-app --image-stream="openshift/dotnet:6.0" https://github.com/sny258/aspcoreapp.git#main --name=azdo-app'
+
+- task: oc-cmd@3
+  displayName: 'oc-cmd '
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OpenShift'
+    version: '4.12.0'
+    cmd: 'oc expose svc/azdo-app'
