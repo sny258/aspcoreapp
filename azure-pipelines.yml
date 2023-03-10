@@ -36,6 +36,7 @@ steps:
     openshiftService: 'OpenShift'
     version: '4.12.0'
     cmd: 'oc expose svc/azdo-app'
+    ignoreFlag: true
 
 - task: oc-cmd@3
   displayName: 'Start new build'
