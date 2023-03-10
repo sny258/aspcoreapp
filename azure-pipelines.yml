@@ -20,16 +20,27 @@ steps:
     tags: '$(Build.BuildId)'
 
 - task: oc-cmd@3
+  displayName: 'create new app'
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'OpenShift'
     version: '4.12.0'
-    cmd: 'oc new-app --image-stream="openshift/dotnet:6.0" https://github.com/sny258/aspcoreapp.git#main --name=azdo-app11'
+    cmd: 'oc new-app --image-stream="openshift/dotnet:6.0" https://github.com/sny258/aspcoreapp.git#main --name=azdo-app'
+    ignoreFlag: true
 
 - task: oc-cmd@3
-  displayName: 'oc-cmd '
+  displayName: 'create service'
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'OpenShift'
     version: '4.12.0'
-    cmd: 'oc expose svc/azdo-app11'
+    cmd: 'oc expose svc/azdo-app'
+
+- task: oc-cmd@3
+  displayName: 'Start new build'
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OpenShift'
+    version: '4.12.0'
+    cmd: 'oc start-build azdo-app --follow'
+  
